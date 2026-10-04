@@ -84,8 +84,8 @@ nothing else.
 
 | Grant | Used for | Without it |
 |---|---|---|
-| Accessibility service | **Hosting** the strip as a trusted overlay: full opacity, gaps pass touches through. **Knowing what is in front of display 0**, so the strip shows on the home screen only and steps aside for panels. It reads window type, bounds and package only. It never reads screen text and never performs actions. | The strip falls back to a normal app overlay at 80% opacity, shown everywhere, because nothing can tell it what is in front. |
-| Draw over other apps | The fallback window, used when accessibility is off. | Fine while accessibility is on. With neither, there is no strip. |
+| Accessibility service | **Hosting** the strip as a trusted overlay: full opacity, gaps pass touches through. **Knowing what is in front of display 0**, so the strip shows on the home screen only and steps aside for panels. It reads window type, bounds and package only. It never reads screen text and never performs actions. | The strip falls back to a normal app overlay at 80% opacity. It still hides off the home screen, from the car launcher's own page setting, but it no longer steps aside for panels. |
+| Draw over other apps | The fallback window, used when accessibility is off, or when **Drawing method** is set to **Over other apps**. | Fine while accessibility is on. With neither, there is no strip. |
 | Notification access | Listing media sessions for **Now Playing**. Android ties `getActiveSessions` to it. No notification is ever read or stored. | Now Playing says media access is off. It never nags. |
 | Location (with background) | Weather for where the car is. One last fix is kept. | Weather cards use a fixed city that you choose. |
 | Notifications | The quiet status notification of the strip service, with its **Stop** action. | The strip still runs. You just don't see the notification. |
@@ -97,7 +97,7 @@ nothing else.
 - **Tap the "+" edit tile** to open **Widgets** in the manager: add, remove, reorder, resize and configure cards.
 - **Long-press any card** to open that card's settings.
 - **Appearance:** glass clarity (Clear, Balanced, Frosted, Solid), edge light, accent colour, glow, strip size (Compact, Standard, Large, Extra large) and reduce motion.
-- **Placement:** alignment (start, centre, end), edge margin (default 76 dp, which lines the first card up with the first dock icon) and lift above the dock (default 12 dp). While this page is open, the real strip is shown live so you can see each change.
+- **Placement:** alignment (start, centre, end), edge margin (default 16 dp) and lift above the dock (default 16 dp). While this page is open, the real strip is shown live so you can see each change.
 - **Weather:** each weather card follows the car's location or a fixed city. Two cards can show two places.
 
 ## Troubleshooting by reason
