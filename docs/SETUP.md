@@ -62,6 +62,10 @@ can see the new version.
 new Quick contacts widget needs phone access. Run the one-tap setup once more.
 The quick tour also opens once after this update.
 
+**Updating from 0.3.x:** if you never changed the placement, the strip moves
+to 20 dp from the edge and 20 dp above the dock by itself. A placement you set
+yourself stays as it is.
+
 ## 2. One-tap setup
 
 On **Overview**, run the one-tap setup. The vendor Settings app is locked down
@@ -137,12 +141,12 @@ nothing else.
 - **Tap the "+" edit tile** to open **Widgets** in the manager: add, remove, reorder, resize and configure cards.
 - **Long-press any card** to open that card's settings.
 - **Appearance:** glass clarity (Clear, Balanced, Frosted, Solid), edge light, accent colour, glow, strip size (Compact, Standard, Large, Extra large) and reduce motion.
-- **Placement:** alignment (start, centre, end), edge margin (default 16 dp) and lift above the dock (default 16 dp). While this page is open, the real strip is shown live so you can see each change.
+- **Placement:** alignment (start, centre, end), edge margin (default 20 dp) and lift above the dock (default 20 dp). While this page is open, the real strip is shown live so you can see each change.
 - **Weather:** each weather card follows the car's location or a fixed city. Two cards can show two places.
   - **Car location** opens on the last place the car was and switches to the live position once GPS answers. Set a **fallback city** to use when no position has come in after 1, 5, 15 or 30 minutes.
   - **Fixed city:** search several hundred cities offline, in English or Arabic, or any city worldwide when online. **Pin here** fixes the card to where the car is now.
   - **Tap the card** for the full forecast: the next hours, ten days, air quality and dust, UV, wind, humidity, pressure, visibility, sunrise and sunset, and the moon. Tap a day to see its hours. Close it with ✕ or Back.
-- **Apps card:** by default it shows just the icon, a tap opens DisplayMirror's app grid and a long press opens your favourites launcher. In its settings choose what a tap does, and whether the name shows. Apps cards you set up yourself before 0.3.0 keep their settings.
+- **Apps card:** by default it shows just the icon on a slim card, a tap opens DisplayMirror's app grid and a long press opens your favourites launcher. In its settings choose what a tap does, and whether the name shows (the card is square then). Apps cards you set up yourself before 0.3.0 keep their settings.
   - **Open an app:** opens the app you pick, or DisplayMirror if you pick none.
   - **App and favourites:** a tap opens the app; a long press opens your favourites launcher.
   - **Favourites:** a tap opens your favourites launcher.
@@ -150,7 +154,7 @@ nothing else.
 - **Energy:** shows battery and fuel as percentages. The range in km is gone, because the car often leaves it empty. A Vehicle card can still show EV range when the car reports it.
 - **Tyres:** temperatures appear next to the pressures when the car reports them, also while a warning is on. A low tyre is marked in a high-contrast warning colour.
 - **Quick contacts:** in its settings, add people from the phonebook or type a name and number. Up to six; the card shows as many as fit its size. Tap an avatar to call.
-- **Prayer times:** follows the car's location, or a fixed city. Choose the calculation method, Asr (Standard or Hanafi) and whether to show the Hijri date.
+- **Prayer times:** follows the car's location, or a fixed city. Choose the calculation method, Asr (Standard or Hanafi) and whether to show the Hijri date. Tap the card for the full prayer screen: the day's times, the Qibla, the Hijri month (switch to **Timetable** for the next 30 days) and, in Ramadan, Imsak and Iftar. Until the card has a place, a tap opens its settings instead.
   - The method follows the country by default: Umm al-Qura for Saudi Arabia; Gulf for the UAE, Bahrain and Oman; their own methods for Kuwait and Qatar; Egyptian for Egypt and the Levant; Tehran for Iran; Karachi for South Asia; ISNA for the US and Canada; and Muslim World League everywhere else, Iraq included.
   - Jafari is available as a manual choice.
 - **Navigate:** save places with **Use the car's location** or search. Choose Google Maps, Waze, or Automatic (the default map app). Tap a place on the card to start the route.

@@ -17,10 +17,12 @@ HELM overlay launcher.
 
 ## Screenshots
 
-![The strip in 0.3.0 above the dock: an analogue clock, Weather, Quick contacts, Prayer times, Navigate and Tyres](docs/img/strip-v030.webp)
+![The strip in 0.4.0 above the dock: the slim Apps card, an analogue clock, Quick contacts, Prayer times, Navigate, Tyres and Energy](docs/img/strip-v040.webp)
 
-| Full forecast | Favourites launcher |
+| Prayer times | In Arabic, right to left |
 |---|---|
+| ![Full-screen prayer times: the next prayer in an arch, today's times on the sun's path, the Qibla and the Hijri month](docs/img/prayer-v040.webp) | ![The same screen in Arabic, mirrored from right to left](docs/img/prayer-ar-v040.webp) |
+| **Full forecast** | **Favourites launcher** |
 | ![Full-screen forecast: hourly curve, ten days and air quality](docs/img/forecast-v020.webp) | ![The favourites launcher floating over the blurred home screen](docs/img/launcher-v030.webp) |
 | **Overview** | **Widgets** |
 | ![Overview: status and setup checklist](docs/img/manager-overview.webp) | ![Widgets: order, size and per-widget settings](docs/img/manager-widgets.webp) |
@@ -34,7 +36,7 @@ _Rendered at the car's resolution (2560 × 1440, density 1.5) with demo data. Th
 **The strip.** By default it shows only on the car's home screen. It steps
 aside for everything else: other apps, the notification shade, dialogs, the
 keyboard, and an overlay launcher's panel. It hides while the screen is off.
-It sits in the corner by default, 16 dp above the dock and 16 dp from the
+It sits in the corner by default, 20 dp above the dock and 20 dp from the
 screen's left edge. Both distances are adjustable.
 
 | Action | Result |
@@ -54,10 +56,10 @@ L 428 and XL 576 dp, with a 16 dp gap between cards.
 | Vehicle | S, M, L | Up to two figures per column (six at most). You pick from: total range, EV range, fuel range, battery %, fuel %, coolant, outside and cabin temperature, 12 V battery, odometer, average energy, average fuel, hybrid mode and charge time left. |
 | Tyres | S, M | Four tyre pressures in kPa, bar or psi, with temperatures when the car reports them. A low tyre is marked in a high-contrast warning colour. |
 | Now Playing | M, L, XL | Title, artist, artwork and progress, with previous, play/pause and next buttons. It can show always, only while something plays, or hide after 2, 5, 10 or 30 idle minutes. |
-| Apps | S | Icon only by default. A tap opens DisplayMirror's app grid (or an app you choose) and a long press opens your favourites launcher. It can also open just one of them, and show its name. |
+| Apps | S | Icon only by default, on a slim card as narrow as the edit tile. A tap opens DisplayMirror's app grid (or an app you choose) and a long press opens your favourites launcher. It can also open just one of them, and show its name on a square card. |
 | Shortcut | S, M | One app of your choice, one tap away. |
 | Quick contacts | S, M, L, XL | Up to six people as round avatars. A tap calls straight away over the car's Bluetooth phone. Pick them from the phonebook the phone shares with the car, or type a number. |
-| Prayer times | S, M, L | The next prayer and the time left, for where the car is (or a fixed city). The L size shows all six times. Calculated offline, with a choice of method and Asr, and an optional Hijri date. |
+| Prayer times | S, M, L | The next prayer and the time left, for where the car is (or a fixed city). The L size shows all six times. Calculated offline, with a choice of method and Asr, and an optional Hijri date. Tap it for the full screen: today's times on the sun's path with a countdown to the next, the Qibla, the night's middle and last third, and the Hijri month or a 30-day timetable. In Ramadan it adds Imsak and Iftar. |
 | Navigate | S, M | One tap starts the route to a saved place (Home, Work or any place) in Google Maps, Waze or the default map app. |
 
 The default layout is Apps (S), Weather (M), Energy (M), Now Playing (L) and
