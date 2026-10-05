@@ -74,6 +74,11 @@ car's own panels), choose **Accessibility** under **Drawing method** on the
 Placement page. **Recent apps** needs **Usage access** (see step 4), and
 **Back** is off until you turn it on.
 
+**Updating from 0.5.x:** your favourites stay as they are, and there are no
+folders until you make one (step 5). **Usage access** for Recent apps no longer
+needs a command from a computer: run the one-tap setup again, or tap **Set up**
+on the **Recent apps** page.
+
 ## 2. One-tap setup
 
 On **Overview**, run the one-tap setup. The vendor Settings app is locked down
@@ -88,7 +93,8 @@ one session it:
 4. allows the **notification listener**, which gives media access;
 5. grants **location** (fine, coarse, then background) and **notifications**;
 6. grants **phone calls** and **contacts**, for the Quick contacts widget;
-7. adds its **accessibility service** to the enabled list, keeping every service already there, and sets `accessibility_enabled` to 1.
+7. adds its **accessibility service** to the enabled list, keeping every service already there, and sets `accessibility_enabled` to 1;
+8. allows **Usage access** (`GET_USAGE_STATS`), which Recent apps needs.
 
 Each step is best-effort. Afterwards the checklist re-reads the real state, so
 a refusal shows up as an unticked row rather than a false success.
@@ -103,9 +109,9 @@ a refusal shows up as an unticked row rather than a false success.
 If the app already holds `WRITE_SECURE_SETTINGS` from an earlier setup, the
 button switches accessibility on directly, without ADB.
 
-The setup does not grant **Usage access**, which only **Recent apps** needs.
-Allow it on the system screen from the manager (step 4), or with the
-`GET_USAGE_STATS` line below.
+If **Usage access** is later lost, the app quietly allows it again. It does
+this only with a key the car already trusts, so it never shows a prompt. You can
+also tap **Set up** on the **Recent apps** page (step 4).
 
 ### Manual route (a PC with adb)
 
@@ -146,8 +152,8 @@ nothing else.
 | Notifications | The quiet status notification of the strip service, with its **Stop** action. | The strip still runs. You just don't see the notification. |
 | Install unknown apps | Installing updates from inside the app. | Update by downloading from the website instead. |
 | Phone calls | **Quick contacts** starts a call at once, over the phone that is connected to the car by Bluetooth. | A tap opens the dialer with the number filled in; you tap call yourself. |
-| Contacts | Picking people from the phonebook the phone shares with the car, in the Quick contacts settings. Only the names and numbers you pick are kept. | Type names and numbers by hand. |
-| Usage access | **Recent apps**: when each app was last open, and nothing else. Not part of the one-tap setup. | Recent apps asks for it instead of listing apps, and the bottom-edge swipe stays off. |
+| Contacts | Picking people from the phonebook the phone shares with the car, in the Quick contacts settings. Only the names, numbers and photos you pick are kept, in the app. | Type names and numbers by hand. |
+| Usage access | **Recent apps**: when each app was last open, and nothing else. The one-tap setup allows it, and the app quietly restores it if it is lost. | Recent apps offers **Set up** instead of listing apps, and the bottom-edge swipe stays off. |
 
 ## 3. Arrange the strip
 
@@ -164,16 +170,17 @@ nothing else.
   - **Open an app:** opens the app you pick, or DisplayMirror if you pick none.
   - **App and favourites:** a tap opens the app; a long press opens your favourites launcher. Turn on **Swap tap and long press** for the other way round.
   - **Favourites:** a tap opens your favourites launcher.
-- **Clock:** choose **Digital** or **Analogue**.
+- **Clock:** choose **Digital** or **Analogue**. With **Show seconds** on, the small digital clock shows small seconds under the time.
 - **Energy:** shows battery and fuel as percentages. The range in km is gone, because the car often leaves it empty. A Vehicle card can still show EV range when the car reports it.
 - **Tyres:** temperatures appear next to the pressures when the car reports them, also while a warning is on. A low tyre is marked in a high-contrast warning colour.
-- **Quick contacts:** in its settings, add people from the phonebook or type a name and number. Up to six; the card shows as many as fit its size. Tap an avatar to call.
+- **Quick contacts:** in its settings, add people from the phonebook or type a name and number. Up to six; the card shows as many as fit its size. Tap an avatar to call. Photos are kept in the app, so they stay after restarts and drives.
 - **Prayer times:** follows the car's location, or a fixed city. Choose the calculation method, Asr (Standard or Hanafi) and whether to show the Hijri date. Tap the card for the full prayer screen: the day's times, the Qibla, the Hijri month (switch to **Timetable** for the next 30 days) and, in Ramadan, Imsak and Iftar. Until the card has a place, a tap opens its settings instead.
   - The method follows the country by default: Umm al-Qura for Saudi Arabia; Gulf for the UAE, Bahrain and Oman; their own methods for Kuwait and Qatar; Egyptian for Egypt and the Levant; Tehran for Iran; Karachi for South Asia; ISNA for the US and Canada; and Muslim World League everywhere else, Iraq included.
   - Jafari is available as a manual choice.
   - **Adjust:** move the Hijri date a day or two (−2 to +2) to follow a local moon sighting, move each time by up to 30 minutes either way, or hide a time. At least one time stays on. The card, the prayer screen, the calendar and Ramadan all follow. Hold **−** or **+** to step quickly.
+  - **Reminder:** on by default. The Prayer card glows softly in glass blue before a prayer (**Before the prayer**, 20 minutes, 5 to 60) and with a brighter icy glow at the prayer time (**At prayer time**, 3 minutes, 1 to 15). Switch it off, or change the times, in the card's settings under **Reminder**. Sunrise and hidden times never glow.
 - **Navigate:** save places with **Use the car's location** or search. Choose Google Maps, Waze, or Automatic (the default map app). A rebuilt Google Maps, such as ReVanced, counts as Google Maps when the official app isn't installed. Tap a place on the card to start the route.
-- **Launcher** page: choose the favourite apps, the grid (4–10 columns, 2–6 rows), icon size, labels and how much the screen behind is dimmed, with a live preview. The launcher itself has no title and no "Add apps" tile. Tap the pen (or press and hold an icon) to edit: drag to reorder, remove apps, or tap **Add apps**.
+- **Launcher** page: choose the favourite apps, the grid (4–10 columns, 2–6 rows), icon size, labels and how much the screen behind is dimmed, with a live preview. The launcher itself has no title and no "Add apps" tile. Tap the pen, or hold an icon and drag it, to edit: drag to reorder, remove apps, or tap **Add apps**. Folders are in step 5.
 - **Quick tour:** it opens on first start and once after updating to 0.3.0. Replay it from **About**.
 
 ## 4. Recent apps, Back and keeping accessibility on
@@ -181,10 +188,10 @@ nothing else.
 ### Recent apps
 
 1. Open the manager's **Recent apps** page.
-2. Under **Usage access**, tap the row to open the system screen, and allow it
-   for **G700 Home**. If the head unit has no Usage access screen, the page
-   shows a line to run from a computer connected over adb instead:
-   `adb shell appops set com.g700.home GET_USAGE_STATS allow`.
+2. Under **Usage access**, tap **Set up**. It runs the one-tap setup in place
+   and shows the result in the row. The one-tap setup has usually done this
+   already. If the head unit has a Usage access screen, the page offers it too,
+   and allowing **G700 Home** there works as well.
 3. Choose how to open it:
    - **Swipe up from the bottom edge** (on by default): a short swipe up from
      the middle third of the bottom edge. With the accessibility service on, it
@@ -209,8 +216,9 @@ them all back.
 3. **Edge swipe:** pick **Left**, **Right** or **Both** under **Edges**. Under
    **Where on the edge**, drag a handle to set the part of the edge that takes
    the swipe, or drag the middle to move it. That part glows on the screen while
-   you choose. Swipe in from the edge and let go; the bubble turns white once
-   letting go will go back.
+   you choose. Swipe in from the edge and let go; a translucent glass bulge with a
+   chevron follows your finger and changes tint once letting go will go back.
+   Slide back towards the edge to cancel.
 4. **Floating button:** tap it to go back. Hold it to lift it, then drag it up,
    down or to the other side; it settles against the nearer edge. Turn on **Lock
    position** so holding it doesn't move it. **Reset position** puts it back on
@@ -231,6 +239,52 @@ service as it was. The row shows how many times it has done so.
   only with a key the car already trusts, so it never shows a prompt.
 - If the other app switches it off again each time, it waits longer between
   tries and then pauses for 30 minutes. The row says until when.
+
+## 5. Launcher folders and app permissions
+
+### Folders
+
+Favourites is the launcher's first and default page. Folders are optional.
+
+1. Open the manager's **Launcher** page and find **Folders**. Tap **New folder**
+   and give it a name. Each folder's row lets you rename it, move it up or
+   down, or delete it.
+2. Open a folder's app picker to choose its apps.
+3. In the launcher, the folders show as pills across the top, with **View all**
+   first. The pills scroll sideways when there are many. **View all** shows every
+   folder as a tile, with a peek at its first apps. Tap a tile to open it.
+
+Each app lives in one place: Favourites or one folder. Adding an app to a folder
+takes it out of where it was. Deleting a folder asks first, and its apps return
+to Favourites.
+
+### The app menu
+
+Press and hold an app in the launcher:
+
+- **Open** starts it.
+- **Move to folder** moves it to Favourites or a folder. **New folder…** asks
+  for a name and moves it there.
+- **Uninstall** is offered for apps you installed. The system's own screen asks
+  you to confirm. G700 Home never uninstalls an app silently or through adb.
+- **Permissions** opens the app's permissions (below).
+
+To reorder, tap the pencil button, or hold an icon and then drag it.
+
+### App permissions
+
+The **Permissions** item opens a page for that app. It lists the app's runtime
+permissions (location, contacts, microphone and so on) and its special access
+(such as draw over other apps), with a switch for each. **Grant all** turns on
+everything that is off, as far as the head unit allows, and asks first. Some
+permissions are fixed by the system or kept by the head unit, and the row says
+so.
+
+It uses the same local debugging service as the one-tap setup, so the first time
+the car may show **"Allow USB debugging?"**. Tap **Allow** with **Always allow**
+ticked. Everything stays on the head unit. It changes only the permissions of
+the app you picked, never a car setting, and it never uninstalls an app through
+adb.
 
 ## Troubleshooting by reason
 
@@ -277,8 +331,8 @@ screen. For full opacity, switch the accessibility service on and choose
 **Accessibility** under **Drawing method** on the Placement page. The car's
 pull-down shortcuts panel then opens under the strip.
 
-**Recent apps says "Allow usage access", or is empty.** Allow usage access on
-the **Recent apps** page (step 4). Only apps with an icon in the app list, used
+**Recent apps says "Allow usage access", or is empty.** Tap **Set up** on
+the **Recent apps** page (step 4), or run the one-tap setup again. Only apps with an icon in the app list, used
 in the last 12 hours, are shown. An app you closed stays hidden until you use
 it again, or until you tap **Show closed apps again**.
 
@@ -327,6 +381,23 @@ number. Values are read only while the strip is showing.
 **The Apps card does nothing or says "Not installed".** The app it opens isn't
 installed: DisplayMirror by default. Pick another app in the card's settings,
 or switch it to **Favourites**.
+
+**An app is missing from Favourites.** Each app lives in one place. If you moved it
+to a folder (or added it to one), it is in that folder: tap **View all** or the
+folder's pill. Deleting a folder puts its apps back in Favourites.
+
+**App permissions says "Allow USB debugging?".** The car asks once, on the main
+screen. Tick **Always allow**, tap **Allow**, then tap **Try again**. If it says
+local debugging is off, the head unit does not offer it. Use the manual route or
+the one-click install from a computer to change an app's permissions instead.
+
+**A switch on App permissions won't stay on.** The system fixes some permissions,
+and some head units keep a permission as it was. The row says so. **Grant all**
+reports how many it could not grant.
+
+**The Prayer card doesn't glow.** Check **Reminder** in the card's settings. The
+glow follows the prayer times as adjusted there, and sunrise and hidden times
+never glow. With **Reduce motion** on, the glow stays still instead of pulsing.
 
 **The favourites launcher is empty.** Tap **Add apps**, or choose favourites on
 the manager's **Launcher** page.
