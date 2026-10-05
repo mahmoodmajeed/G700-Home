@@ -66,6 +66,14 @@ The quick tour also opens once after this update.
 to 20 dp from the edge and 20 dp above the dock by itself. A placement you set
 yourself stays as it is.
 
+**Updating from 0.4.x:** the strip is now drawn **over other apps** by
+default, so the car's pull-down shortcuts panel opens over it rather than under
+it. If the **Drawing method** was left on its old default, it moves once by
+itself. To draw it with the accessibility service again (full opacity, above the
+car's own panels), choose **Accessibility** under **Drawing method** on the
+Placement page. **Recent apps** needs **Usage access** (see step 4), and
+**Back** is off until you turn it on.
+
 ## 2. One-tap setup
 
 On **Overview**, run the one-tap setup. The vendor Settings app is locked down
@@ -74,8 +82,8 @@ G700 Home opens a session to the head unit's own ADB daemon over the loopback
 address 127.0.0.1, as the `shell` user. There is no PC and no cable. In that
 one session it:
 
-1. grants itself `WRITE_SECURE_SETTINGS`, so that every later boot can switch accessibility back on by itself;
-2. allows **draw over other apps** (`SYSTEM_ALERT_WINDOW`), which is the fallback window;
+1. grants itself `WRITE_SECURE_SETTINGS`, so that every later boot can switch accessibility back on by itself, and so can **Keep accessibility on** when another app switches it off;
+2. allows **draw over other apps** (`SYSTEM_ALERT_WINDOW`), the window the strip is drawn in by default;
 3. allows **install unknown apps** (`REQUEST_INSTALL_PACKAGES`) for self-updates;
 4. allows the **notification listener**, which gives media access;
 5. grants **location** (fine, coarse, then background) and **notifications**;
@@ -95,10 +103,14 @@ a refusal shows up as an unticked row rather than a false success.
 If the app already holds `WRITE_SECURE_SETTINGS` from an earlier setup, the
 button switches accessibility on directly, without ADB.
 
+The setup does not grant **Usage access**, which only **Recent apps** needs.
+Allow it on the system screen from the manager (step 4), or with the
+`GET_USAGE_STATS` line below.
+
 ### Manual route (a PC with adb)
 
-These are the same grants, typed by hand. First read the current accessibility
-list, then **append** to it. Never replace it, or you will switch off other
+These are the same grants, typed by hand, plus usage access for Recent apps.
+First read the current accessibility list, then **append** to it. Never replace it, or you will switch off other
 services such as DisplayMirror's.
 
 ```bash
@@ -112,6 +124,7 @@ adb shell pm grant com.g700.home android.permission.ACCESS_BACKGROUND_LOCATION
 adb shell pm grant com.g700.home android.permission.POST_NOTIFICATIONS
 adb shell pm grant com.g700.home android.permission.CALL_PHONE
 adb shell pm grant com.g700.home android.permission.READ_CONTACTS
+adb shell appops set com.g700.home GET_USAGE_STATS allow
 
 adb shell settings get secure enabled_accessibility_services
 # then, with <existing> being exactly what that printed (omit "<existing>:" if it printed null):
@@ -126,14 +139,15 @@ nothing else.
 
 | Grant | Used for | Without it |
 |---|---|---|
-| Accessibility service | **Hosting** the strip as a trusted overlay: full opacity, gaps pass touches through. **Knowing what is in front of display 0**, so the strip shows on the home screen only and steps aside for panels. It reads window type, bounds and package only. It never reads screen text and never performs actions. | The strip falls back to a normal app overlay at 80% opacity. It still hides off the home screen, from the car launcher's own page setting, but it no longer steps aside for panels. |
-| Draw over other apps | The fallback window, used when accessibility is off, or when **Drawing method** is set to **Over other apps**. | Fine while accessibility is on. With neither, there is no strip. |
+| Accessibility service | **Knowing what is in front of display 0**, so the strip shows on the home screen only and steps aside for panels. **Back**, which goes back through it, and the Recent apps swipe on the very bottom edge. **Hosting** the strip at full opacity, if **Drawing method** is set to **Accessibility**. It reads window type, bounds and package only. It never reads screen text. Its only actions are going back (when Back is on) and opening the system's recent apps (if that option is on). | The strip still hides off the home screen, from the car launcher's own page setting, but it no longer steps aside for panels. There is no Back, and the bottom-edge swipe sits just above the dock instead. |
+| Draw over other apps | The window the strip is drawn in by default (**Drawing method: Over other apps**), at 80% opacity, under the car's own panels. Also the bottom-edge swipe while accessibility is off. | The strip is drawn by the accessibility service instead, if it is on. With neither, there is no strip. |
 | Notification access | Listing media sessions for **Now Playing**. Android ties `getActiveSessions` to it. No notification is ever read or stored. | Now Playing says media access is off. It never nags. |
 | Location (with background) | Weather and prayer times for where the car is, and saving the car's position as a Navigate place. The last position is kept, so the weather card opens on it at once while GPS is still searching. | Weather and prayer times use a fixed city that you choose, or the weather card's fallback city. Navigate places can still be found by search. |
 | Notifications | The quiet status notification of the strip service, with its **Stop** action. | The strip still runs. You just don't see the notification. |
 | Install unknown apps | Installing updates from inside the app. | Update by downloading from the website instead. |
 | Phone calls | **Quick contacts** starts a call at once, over the phone that is connected to the car by Bluetooth. | A tap opens the dialer with the number filled in; you tap call yourself. |
 | Contacts | Picking people from the phonebook the phone shares with the car, in the Quick contacts settings. Only the names and numbers you pick are kept. | Type names and numbers by hand. |
+| Usage access | **Recent apps**: when each app was last open, and nothing else. Not part of the one-tap setup. | Recent apps asks for it instead of listing apps, and the bottom-edge swipe stays off. |
 
 ## 3. Arrange the strip
 
@@ -148,7 +162,7 @@ nothing else.
   - **Tap the card** for the full forecast: the next hours, ten days, air quality and dust, UV, wind, humidity, pressure, visibility, sunrise and sunset, and the moon. Tap a day to see its hours. Close it with ✕ or Back.
 - **Apps card:** by default it shows just the icon on a slim card, a tap opens DisplayMirror's app grid and a long press opens your favourites launcher. In its settings choose what a tap does, and whether the name shows (the card is square then). Apps cards you set up yourself before 0.3.0 keep their settings.
   - **Open an app:** opens the app you pick, or DisplayMirror if you pick none.
-  - **App and favourites:** a tap opens the app; a long press opens your favourites launcher.
+  - **App and favourites:** a tap opens the app; a long press opens your favourites launcher. Turn on **Swap tap and long press** for the other way round.
   - **Favourites:** a tap opens your favourites launcher.
 - **Clock:** choose **Digital** or **Analogue**.
 - **Energy:** shows battery and fuel as percentages. The range in km is gone, because the car often leaves it empty. A Vehicle card can still show EV range when the car reports it.
@@ -157,9 +171,66 @@ nothing else.
 - **Prayer times:** follows the car's location, or a fixed city. Choose the calculation method, Asr (Standard or Hanafi) and whether to show the Hijri date. Tap the card for the full prayer screen: the day's times, the Qibla, the Hijri month (switch to **Timetable** for the next 30 days) and, in Ramadan, Imsak and Iftar. Until the card has a place, a tap opens its settings instead.
   - The method follows the country by default: Umm al-Qura for Saudi Arabia; Gulf for the UAE, Bahrain and Oman; their own methods for Kuwait and Qatar; Egyptian for Egypt and the Levant; Tehran for Iran; Karachi for South Asia; ISNA for the US and Canada; and Muslim World League everywhere else, Iraq included.
   - Jafari is available as a manual choice.
-- **Navigate:** save places with **Use the car's location** or search. Choose Google Maps, Waze, or Automatic (the default map app). Tap a place on the card to start the route.
+  - **Adjust:** move the Hijri date a day or two (−2 to +2) to follow a local moon sighting, move each time by up to 30 minutes either way, or hide a time. At least one time stays on. The card, the prayer screen, the calendar and Ramadan all follow. Hold **−** or **+** to step quickly.
+- **Navigate:** save places with **Use the car's location** or search. Choose Google Maps, Waze, or Automatic (the default map app). A rebuilt Google Maps, such as ReVanced, counts as Google Maps when the official app isn't installed. Tap a place on the card to start the route.
 - **Launcher** page: choose the favourite apps, the grid (4–10 columns, 2–6 rows), icon size, labels and how much the screen behind is dimmed, with a live preview. The launcher itself has no title and no "Add apps" tile. Tap the pen (or press and hold an icon) to edit: drag to reorder, remove apps, or tap **Add apps**.
 - **Quick tour:** it opens on first start and once after updating to 0.3.0. Replay it from **About**.
+
+## 4. Recent apps, Back and keeping accessibility on
+
+### Recent apps
+
+1. Open the manager's **Recent apps** page.
+2. Under **Usage access**, tap the row to open the system screen, and allow it
+   for **G700 Home**. If the head unit has no Usage access screen, the page
+   shows a line to run from a computer connected over adb instead:
+   `adb shell appops set com.g700.home GET_USAGE_STATS allow`.
+3. Choose how to open it:
+   - **Swipe up from the bottom edge** (on by default): a short swipe up from
+     the middle third of the bottom edge. With the accessibility service on, it
+     is the very bottom edge; without it, just above the dock.
+   - **Swipe up on the strip** (on by default): a swipe up on the widget cards.
+   - The **Recent apps** button in the favourites launcher is always there.
+   - **Use the system's recent apps** (off by default) asks the head unit for
+     its own recents screen first. It needs the accessibility service. If
+     nothing happens, turn it off.
+
+In recent apps, tap a card to switch to that app, swipe a card up to close it,
+or tap **Clear all**. Tap outside, swipe down or press Back to leave. A closed
+app stays off the list until you use it again; **Show closed apps again** brings
+them all back.
+
+### Back
+
+1. Make sure the accessibility service is on. The **Back** page says **Needs
+   accessibility** if it isn't.
+2. On the **Back** page, under **Style**, choose **Edge swipe** or **Floating
+   button**. **Off** is the default.
+3. **Edge swipe:** pick **Left**, **Right** or **Both** under **Edges**. Under
+   **Where on the edge**, drag a handle to set the part of the edge that takes
+   the swipe, or drag the middle to move it. That part glows on the screen while
+   you choose. Swipe in from the edge and let go; the bubble turns white once
+   letting go will go back.
+4. **Floating button:** tap it to go back. Hold it to lift it, then drag it up,
+   down or to the other side; it settles against the nearer edge. Turn on **Lock
+   position** so holding it doesn't move it. **Reset position** puts it back on
+   the left edge, halfway down. It dims after a few seconds untouched.
+
+Back is hidden on the car's home screen, where there is nothing to go back to.
+
+### Keep accessibility on
+
+Another app on the car can rewrite the list of enabled accessibility services
+and drop G700 Home from it. **Keep accessibility on**, on **Overview**, is on by
+default: it puts G700 Home's service back straight away and leaves every other
+service as it was. The row shows how many times it has done so.
+
+- It needs `WRITE_SECURE_SETTINGS`, which the one-tap setup grants. By hand:
+  `adb shell pm grant com.g700.home android.permission.WRITE_SECURE_SETTINGS`.
+- Without that grant it tries the setup's route quietly every 10 minutes, and
+  only with a key the car already trusts, so it never shows a prompt.
+- If the other app switches it off again each time, it waits longer between
+  tries and then pauses for 30 minutes. The row says until when.
 
 ## Troubleshooting by reason
 
@@ -172,7 +243,7 @@ are checked in this order. The first one that applies decides.
 | **Preview** | yes | The manager is on **Placement**, so the strip is shown live. | Nothing. |
 | **ManagerOpen** | no | The manager is open on any other page. | Press Home or close the manager. |
 | **DisplayOff** | no | Display 0 reports that it is off. | It returns when the screen comes on. |
-| **OwnApp** | no | G700 Home's own screen is in front: the favourites launcher or the forecast. | Close it, or press Home. |
+| **OwnApp** | no | G700 Home's own screen is in front: the favourites launcher, recent apps or the forecast. | Close it, or press Home. |
 | **HiddenApp** | no | The app in front is on your **Never show on** list. That list beats everything below it, including **Everywhere**. | Remove the app from Never show on. |
 | **Covered** | no | **Step aside** is on and something is open over the screen: the notification shade, a dialog, the keyboard, or an overlay launcher's panel such as HELM's dashboard. | Close it and the strip returns. If a panel is wrongly treated as covering, you can switch Step aside off. |
 | **Always** | yes | Visibility is set to **Everywhere**. | Set it back to **Home screen** if that isn't what you want. |
@@ -192,13 +263,38 @@ missing.
 
 **The strip is gone after a reboot.** The strip only starts at boot if it is
 switched on. Accessibility is restored at boot only if the app holds
-`WRITE_SECURE_SETTINGS`. Running the one-tap setup once gives it that
-permanently.
+`WRITE_SECURE_SETTINGS` and **Keep accessibility on** is on. Running the
+one-tap setup once gives it that permanently.
 
-**The strip looks a little transparent.** It is running as an app overlay,
-which Android caps at 80% opacity so that touches still reach the home screen.
-Switch the accessibility service on, and leave the **Window** setting on
-**Automatic**, which is the default.
+**Accessibility keeps switching itself off.** Another app is rewriting the list
+of enabled services. Leave **Keep accessibility on** switched on (Overview). If
+its row says it is paused, the other app switched it off again each time; it
+carries on by itself after the pause.
+
+**The strip looks a little transparent.** It is drawn over other apps, the
+default, which Android caps at 80% opacity so that touches still reach the home
+screen. For full opacity, switch the accessibility service on and choose
+**Accessibility** under **Drawing method** on the Placement page. The car's
+pull-down shortcuts panel then opens under the strip.
+
+**Recent apps says "Allow usage access", or is empty.** Allow usage access on
+the **Recent apps** page (step 4). Only apps with an icon in the app list, used
+in the last 12 hours, are shown. An app you closed stays hidden until you use
+it again, or until you tap **Show closed apps again**.
+
+**A closed app is still running.** Closing ends only background apps with
+nothing keeping them running. Music, navigation and other apps with a running
+service can carry on. Nothing is force-stopped.
+
+**The bottom-edge swipe does nothing.** It needs usage access, the strip
+switched on, and **Swipe up from the bottom edge** on. It steps aside while the
+keyboard, a dialog or the shade is open, and while a G700 Home screen is up.
+Without the accessibility service it sits just above the dock, not on the very
+bottom edge.
+
+**There is no back swipe or back button.** Choose a style on the **Back** page,
+and switch the accessibility service on. Back stays hidden on the car's home
+screen, and the edge swipe steps aside while the keyboard is up.
 
 **Taps near the strip don't reach the car or the dock.** On Android 13 and
 later only the cards themselves take touches, and the glow and shadow around

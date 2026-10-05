@@ -44,6 +44,7 @@ screen's left edge. Both distances are adjustable.
 | Tap a card | It does its one job: play/pause, open the player, open the full forecast, open the app grid or your favourites, launch an app, call a contact, start a route. |
 | Long-press a card | Opens that widget's settings in the manager. An Apps card set to **App and favourites** (the default) opens your favourites launcher instead. |
 | Tap the edit tile (+) | Opens the widget library in the manager. |
+| Swipe up on the cards | Opens **Recent apps** (see below). |
 
 **The widgets.** Cards are 132 dp tall. Their widths are S 132, M 280,
 L 428 and XL 576 dp, with a 16 dp gap between cards.
@@ -56,24 +57,40 @@ L 428 and XL 576 dp, with a 16 dp gap between cards.
 | Vehicle | S, M, L | Up to two figures per column (six at most). You pick from: total range, EV range, fuel range, battery %, fuel %, coolant, outside and cabin temperature, 12 V battery, odometer, average energy, average fuel, hybrid mode and charge time left. |
 | Tyres | S, M | Four tyre pressures in kPa, bar or psi, with temperatures when the car reports them. A low tyre is marked in a high-contrast warning colour. |
 | Now Playing | M, L, XL | Title, artist, artwork and progress, with previous, play/pause and next buttons. It can show always, only while something plays, or hide after 2, 5, 10 or 30 idle minutes. |
-| Apps | S | Icon only by default, on a slim card as narrow as the edit tile. A tap opens DisplayMirror's app grid (or an app you choose) and a long press opens your favourites launcher. It can also open just one of them, and show its name on a square card. |
+| Apps | S | Icon only by default, on a slim card as narrow as the edit tile. A tap opens DisplayMirror's app grid (or an app you choose) and a long press opens your favourites launcher. It can also open just one of them, swap tap and long press, and show its name on a square card. |
 | Shortcut | S, M | One app of your choice, one tap away. |
 | Quick contacts | S, M, L, XL | Up to six people as round avatars. A tap calls straight away over the car's Bluetooth phone. Pick them from the phonebook the phone shares with the car, or type a number. |
-| Prayer times | S, M, L | The next prayer and the time left, for where the car is (or a fixed city). The L size shows all six times. Calculated offline, with a choice of method and Asr, and an optional Hijri date. Tap it for the full screen: today's times on the sun's path with a countdown to the next, the Qibla, the night's middle and last third, and the Hijri month or a 30-day timetable. In Ramadan it adds Imsak and Iftar. |
-| Navigate | S, M | One tap starts the route to a saved place (Home, Work or any place) in Google Maps, Waze or the default map app. |
+| Prayer times | S, M, L | The next prayer and the time left, for where the car is (or a fixed city). The L size shows all six times. Calculated offline, with a choice of method and Asr, and an optional Hijri date. Tap it for the full screen: today's times on the sun's path with a countdown to the next, the Qibla, the night's middle and last third, and the Hijri month or a 30-day timetable. In Ramadan it adds Imsak and Iftar. The Hijri date can move a day or two for a local moon sighting, and each time can move up to 30 minutes or be hidden. |
+| Navigate | S, M | One tap starts the route to a saved place (Home, Work or any place) in Google Maps, Waze or the default map app. A rebuilt Google Maps (such as ReVanced) counts as Google Maps. |
 
 The default layout is Apps (S), Weather (M), Energy (M), Now Playing (L) and
 Vehicle (M), plus the edit tile. It fits the 1706 dp-wide screen. There is no
 clock by default because the status bar already shows the time.
 
+**Recent apps.** The head unit has no recent-apps screen, so G700 Home adds
+one. Swipe up from the middle of the bottom edge, swipe up on the strip, or tap
+the button in the favourites launcher. The apps used in the last 12 hours show
+as a carousel of glass cards, most recent first. Tap a card to switch back to
+that app, or swipe it up to close it. Closing ends only what Android lets an
+ordinary app end, and nothing is force-stopped. It needs **Usage access**,
+which tells the app when each app was last open and nothing else.
+
+**Back.** The head unit has no back key either. Turn on an **edge swipe**
+(left, right or both edges, on the part of the edge you choose) or a small
+**floating button** that you can hold to move and then lock. Either one goes
+back in the app in front, exactly like a back key, and stays hidden on the
+car's home screen. It is off by default and needs the accessibility service.
+
 **The manager.** Open it from the app grid, or tap the strip's edit tile.
 
-- **Overview:** whether the strip is showing right now and why, plus the one-tap setup and its permission checklist.
+- **Overview:** whether the strip is showing right now and why, plus the one-tap setup, its permission checklist and **Keep accessibility on**.
 - **Widgets:** add, remove, reorder, resize and configure cards.
 - **Launcher:** the favourites launcher's apps, grid size (4–10 columns, 2–6 rows), icon size, labels and background, with a live preview. The launcher floats over the current app with a blur, and its dimming keeps names readable over a light or dark screen. It has no title and no "Add apps" tile: tap the pen to edit, then **Add apps**.
+- **Recent apps:** usage access, the ways to open recent apps, and **Show closed apps again**.
+- **Back:** off, edge swipe or floating button; which edges and where on them; lock or reset the button.
 - **Appearance:** glass clarity (Clear, Balanced, Frosted, Solid), edge light, accent colour, glow, strip size (Compact, Standard, Large, Extra large) and reduce motion.
-- **Placement:** alignment (start, centre, end), edge margin and lift above the dock. While this page is open, the real strip shows live.
-- **About:** the version, a one-tap update from GitHub, the quick tour, and credits.
+- **Placement:** alignment (start, centre, end), edge margin, lift above the dock and the drawing method. While this page is open, the real strip shows live.
+- **About:** the version, a one-tap update from GitHub, the quick tour, credits, and a collapsed **Troubleshooting details** section.
 
 A short **quick tour** opens on first start (and once after updating to
 0.3.0). It shows what the Apps card does, that the weather opens a full
@@ -130,14 +147,20 @@ and in one session it:
 - allows notification access, which is used only to see media sessions;
 - grants location (including background) and notifications;
 - grants phone calls and contacts, for the Quick contacts widget;
-- allows "draw over other apps" (the fallback window) and "install unknown apps" (for self-updates).
+- allows "draw over other apps" (the window the strip is drawn in by default) and "install unknown apps" (for self-updates).
 
 If DisplayMirror was provisioned on the car, G700 Home reuses its
 already-trusted ADB key and nothing is asked. Otherwise the car shows
 **"Allow USB debugging?"** on the main screen once: tick **Always allow**, tap
 **Allow**, then run the setup again. From then on the app holds
 `WRITE_SECURE_SETTINGS` and switches its accessibility service back on by
-itself at boot.
+itself at boot. If another app later switches it off, **Keep accessibility on**
+(on Overview, on by default) puts it straight back, and leaves that app's own
+services on.
+
+**Recent apps** also needs **Usage access**, which the one-tap setup doesn't
+grant. Allow it from the **Recent apps** page. **Back** is off until you choose
+a style on the **Back** page.
 
 **Updating from 0.2.x?** Run the one-tap setup once more. Overview shows the
 setup as not finished until you do, because Quick contacts needs phone access.
@@ -156,7 +179,8 @@ what each grant does, and troubleshooting.
 - **Location** is used for the weather, prayer times and saving a Navigate place. The car's last position is kept on the head unit, so the weather can open on it before GPS answers. It leaves the head unit only as the coordinates of the weather and place-name requests above, and it is logged no finer than about 1 km.
 - **Car data is read-only** and never leaves the head unit. The app never writes a vehicle setting. For the same reason there is no climate (A/C) control.
 - **Notification access** exists only because Android requires it to list media sessions. The app never reads a notification.
-- **The accessibility service** reads only each window's type, bounds and owning package. It never reads screen text and never performs actions.
+- **The accessibility service** reads only each window's type, bounds and owning package. It never reads screen text. The only actions it performs are going back, when you turn **Back** on, and opening the system's recent apps, if you turn that option on.
+- **Usage access** is read only for when each app was last open, to list recent apps. It stays on the head unit.
 
 ## Documentation
 
