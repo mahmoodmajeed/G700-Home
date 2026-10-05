@@ -79,6 +79,12 @@ folders until you make one (step 5). **Usage access** for Recent apps no longer
 needs a command from a computer: run the one-tap setup again, or tap **Set up**
 on the **Recent apps** page.
 
+**Updating from 0.6.x:** your favourites and folders stay as they are. Since
+0.7.0 an app can be in Favourites and in a folder at the same time, so nothing
+moves until you star or move an app (step 5). The one-tap setup runs once by
+itself the next time you open the manager, after the quick tour. The **Use the
+system's recent apps** switch is gone, because it did nothing on the car.
+
 ## 2. One-tap setup
 
 On **Overview**, run the one-tap setup. The vendor Settings app is locked down
@@ -109,9 +115,44 @@ a refusal shows up as an unticked row rather than a false success.
 If the app already holds `WRITE_SECURE_SETTINGS` from an earlier setup, the
 button switches accessibility on directly, without ADB.
 
-If **Usage access** is later lost, the app quietly allows it again. It does
-this only with a key the car already trusts, so it never shows a prompt. You can
-also tap **Set up** on the **Recent apps** page (step 4).
+### First start, and setup that fixes itself
+
+Since 0.7.0 the one-tap setup runs by itself the first time you open the
+manager, once the welcome and the quick tour are done. It runs once per install,
+and once after updating. This is the only time the app may show **"Allow USB
+debugging?"** without you tapping a button, and only while the manager is open.
+
+After that, the app checks the grants it really needs about half a minute after
+it starts, and again each time you open the manager:
+
+- **Accessibility**, for Back, the swipe over the dock, and the strip knowing when to show;
+- **Usage access**, for Recent apps;
+- **Draw over other apps**, only while **Drawing method** is **Over other apps**;
+- **Notification access**, only while a Now Playing card is on the strip.
+
+A missing one is turned back on quietly, and only with a key the car already
+trusts, so it never shows a prompt. Accessibility comes back first through
+`WRITE_SECURE_SETTINGS`, if **Keep accessibility on** is on. Location,
+contacts, phone calls, notifications and install unknown apps are never asked
+for again: they are optional.
+
+If something is still off, the manager shows a **Setup** banner at the top. It
+lists each grant that is off and what stops working without it.
+
+- **Fix** runs the one-tap setup again. If the car asks **"Allow USB
+  debugging?"**, tick **Always allow**, tap **Allow**, then **Try again**.
+- **Open settings** appears after a try. It opens the system screen for the
+  first grant still off, or the **Recent apps** page for usage access.
+- **Later** hides the banner for six hours, or until the car is next started.
+  If another grant goes missing in the meantime, the banner shows again at once.
+
+When the app finds a grant off at start and can't fix it, it also posts a quiet
+notification, **G700 Home needs a hand**, on the **Setup reminders** channel.
+Tapping it opens the manager on Overview with the banner. It is never posted
+while the manager is open, and it goes away when you open the manager. Turn the
+channel off in Android's notification settings if you don't want it.
+
+You can also tap **Set up** on the **Recent apps** page (step 4).
 
 ### Manual route (a PC with adb)
 
@@ -140,12 +181,13 @@ adb shell settings put secure accessibility_enabled 1
 
 ## What each grant does
 
-**None of them is required.** Each missing grant takes away one thing and
-nothing else.
+**None of them is required to run the strip.** Each missing grant takes away
+one thing and nothing else. The setup banner asks only for the four that the
+features you use need (see step 2); the others are optional.
 
 | Grant | Used for | Without it |
 |---|---|---|
-| Accessibility service | **Knowing what is in front of display 0**, so the strip shows on the home screen only and steps aside for panels. **Back**, which goes back through it, and the Recent apps swipe on the very bottom edge. **Hosting** the strip at full opacity, if **Drawing method** is set to **Accessibility**. It reads window type, bounds and package only. It never reads screen text. Its only actions are going back (when Back is on) and opening the system's recent apps (if that option is on). | The strip still hides off the home screen, from the car launcher's own page setting, but it no longer steps aside for panels. There is no Back, and the bottom-edge swipe sits just above the dock instead. |
+| Accessibility service | **Knowing what is in front of display 0**, so the strip shows on the home screen only and steps aside for panels. **Back**, which goes back through it, and the Recent apps swipe on the very bottom edge. **Hosting** the strip at full opacity, if **Drawing method** is set to **Accessibility**. It reads window type, bounds and package only. It never reads screen text. Its only action is going back (when Back is on). | The strip still hides off the home screen, from the car launcher's own page setting, but it no longer steps aside for panels. There is no Back, and the bottom-edge swipe sits just above the dock instead. |
 | Draw over other apps | The window the strip is drawn in by default (**Drawing method: Over other apps**), at 80% opacity, under the car's own panels. Also the bottom-edge swipe while accessibility is off. | The strip is drawn by the accessibility service instead, if it is on. With neither, there is no strip. |
 | Notification access | Listing media sessions for **Now Playing**. Android ties `getActiveSessions` to it. No notification is ever read or stored. | Now Playing says media access is off. It never nags. |
 | Location (with background) | Weather and prayer times for where the car is, and saving the car's position as a Navigate place. The last position is kept, so the weather card opens on it at once while GPS is still searching. | Weather and prayer times use a fixed city that you choose, or the weather card's fallback city. Navigate places can still be found by search. |
@@ -198,9 +240,10 @@ nothing else.
      is the very bottom edge; without it, just above the dock.
    - **Swipe up on the strip** (on by default): a swipe up on the widget cards.
    - The **Recent apps** button in the favourites launcher is always there.
-   - **Use the system's recent apps** (off by default) asks the head unit for
-     its own recents screen first. It needs the accessibility service. If
-     nothing happens, turn it off.
+
+While an app is full screen (it hides the status bar and the dock, like a video
+player), the bottom-edge swipe steps aside, so a swipe meant for the app doesn't
+open recent apps. It comes back when the bars do.
 
 In recent apps, tap a card to switch to that app, swipe a card up to close it,
 or tap **Clear all**. Tap outside, swipe down or press Back to leave. A closed
@@ -225,6 +268,9 @@ them all back.
    the left edge, halfway down. It dims after a few seconds untouched.
 
 Back is hidden on the car's home screen, where there is nothing to go back to.
+Over a full-screen app the edge swipe works as usual, and the floating button
+turns almost clear so it doesn't cover the picture. It still works: a touch
+lights it up, and it fades again after three seconds.
 
 ### Keep accessibility on
 
@@ -253,18 +299,28 @@ Favourites is the launcher's first and default page. Folders are optional.
 3. In the launcher, the folders show as pills across the top, with **View all**
    first. The pills scroll sideways when there are many. **View all** shows every
    folder as a tile, with a peek at its first apps. Tap a tile to open it.
+4. The small **+** at the end of the pills makes a new folder straight from the
+   launcher, and opens it.
+5. Swipe past the last page of Favourites or a folder to go on to the next one,
+   in the order of the pills. Swipe back past the first page for the one before.
+   A tap on empty space still closes the launcher.
 
-Each app lives in one place: Favourites or one folder. Adding an app to a folder
-takes it out of where it was. Deleting a folder asks first, and its apps return
-to Favourites.
+Since 0.7.0, Favourites is your starred apps rather than a folder. An app can be
+in Favourites and in one folder at the same time. Adding an app to a folder
+takes it out of any other folder, but it stays in Favourites. On the
+**Launcher** page, a favourite that is also in a folder says **Also in** and the
+folder's name. Deleting a folder asks first; its apps that aren't already in
+Favourites move to the end of Favourites.
 
 ### The app menu
 
 Press and hold an app in the launcher:
 
 - **Open** starts it.
-- **Move to folder** moves it to Favourites or a folder. **New folder…** asks
-  for a name and moves it there.
+- **Add to Favourites** (an outline star) or **Remove from Favourites** (a
+  filled star) stars or unstars it. It stays in its folder either way.
+- **Move to folder** moves it to another folder. It stays in Favourites if it
+  is starred. **New folder…** asks for a name and moves it there.
 - **Uninstall** is offered for apps you installed. The system's own screen asks
   you to confirm. G700 Home never uninstalls an app silently or through adb.
 - **Permissions** opens the app's permissions (below).
@@ -342,13 +398,18 @@ service can carry on. Nothing is force-stopped.
 
 **The bottom-edge swipe does nothing.** It needs usage access, the strip
 switched on, and **Swipe up from the bottom edge** on. It steps aside while the
-keyboard, a dialog or the shade is open, and while a G700 Home screen is up.
+keyboard, a dialog or the shade is open, while a G700 Home screen is up, and
+while an app is full screen with the dock hidden.
 Without the accessibility service it sits just above the dock, not on the very
 bottom edge.
 
 **There is no back swipe or back button.** Choose a style on the **Back** page,
 and switch the accessibility service on. Back stays hidden on the car's home
 screen, and the edge swipe steps aside while the keyboard is up.
+
+**The floating back button is almost invisible.** An app is full screen, so the
+button is faded to keep out of the picture. Tap it as usual; it lights up when
+touched, and it is back to normal once the app shows the bars again.
 
 **Taps near the strip don't reach the car or the dock.** On Android 13 and
 later only the cards themselves take touches, and the glow and shadow around
@@ -382,9 +443,15 @@ number. Values are read only while the strip is showing.
 installed: DisplayMirror by default. Pick another app in the card's settings,
 or switch it to **Favourites**.
 
-**An app is missing from Favourites.** Each app lives in one place. If you moved it
-to a folder (or added it to one), it is in that folder: tap **View all** or the
-folder's pill. Deleting a folder puts its apps back in Favourites.
+**An app is missing from Favourites.** It isn't starred. Find it in its folder
+(tap **View all** or the folder's pill), hold it and choose **Add to
+Favourites**.
+
+**The Setup banner keeps coming back.** A grant the app needs is off and it
+can't turn it back on by itself. Tap **Fix**, and allow **"Allow USB
+debugging?"** if the car asks. If that doesn't work, use **Open settings**, or
+the manual route in step 2. **Later** hides it for six hours, or until the car
+is next started.
 
 **App permissions says "Allow USB debugging?".** The car asks once, on the main
 screen. Tick **Always allow**, tap **Allow**, then tap **Try again**. If it says

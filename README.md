@@ -74,7 +74,10 @@ as a carousel of glass cards, most recent first. Tap a card to switch back to
 that app, or swipe it up to close it. Closing ends only what Android lets an
 ordinary app end, and nothing is force-stopped. It needs **Usage access**,
 which tells the app when each app was last open and nothing else. The one-tap
-setup allows it, and the app quietly allows it again if it is lost.
+setup allows it, and the app quietly allows it again if it is lost. While an
+app is full screen (it hides the status bar and the dock, like a video), the
+bottom-edge swipe steps aside so it can't be opened by mistake, and it comes
+back with the bars.
 
 **Back.** The head unit has no back key either. Turn on an **edge swipe**
 (left, right or both edges, on the part of the edge you choose) or a small
@@ -83,17 +86,25 @@ back in the app in front, exactly like a back key, and stays hidden on the
 car's home screen. It is off by default and needs the accessibility service. The edge swipe pulls a
 translucent liquid-glass bulge with a chevron that follows your finger. It
 changes tint once letting go will go back, and sliding back to the edge cancels.
+Over a full-screen app the edge swipe keeps working, and the floating button
+turns almost clear so it doesn't cover the picture. It still works: a touch
+lights it up again.
 
 **Launcher folders.** Favourites stays the default. If you make folders, they
 show as pills at the top of the launcher, and they scroll sideways when there
 are many. The first button, **View all**, shows every folder as a grid of
 tiles. Make, rename, reorder and delete folders, and pick their apps, in the
-manager under **Launcher**, **Folders**. Each app lives in one place. Deleting
-a folder returns its apps to Favourites.
+manager under **Launcher**, **Folders**, or tap the small **+** at the end of
+the pills for a new one. Swipe past the last page of Favourites or a folder to
+go on to the next one, and back past the first page for the one before. Since
+0.7.0, Favourites is a set of starred apps rather than a folder: an app can be
+in Favourites and in one folder at the same time. Deleting a folder moves its
+apps that aren't already in Favourites to the end of Favourites.
 
-**The app menu.** Press and hold an app in the launcher for **Open**, **Move to
-folder** (including **New folder…**), **Uninstall** (for apps you installed;
-Android asks you to confirm) and **Permissions**. To edit the launcher, tap the
+**The app menu.** Press and hold an app in the launcher for **Open**, **Add to
+Favourites** or **Remove from Favourites** (a star), **Move to folder**
+(including **New folder…**), **Uninstall** (for apps you installed; Android
+asks you to confirm) and **Permissions**. To edit the launcher, tap the
 pencil button, or hold an icon and drag it.
 
 **App permissions.** The **Permissions** item opens a screen that lists the
@@ -108,10 +119,21 @@ before a prayer (set it from 5 to 60), and with a brighter icy glow at the
 prayer time for 3 minutes (1 to 15). It is on by default. Change it in the
 Prayer card's settings under **Reminder**.
 
-**The manager.** Open it from the app grid, or tap the strip's edit tile.
+**Setup that fixes itself.** Since 0.7.0 the app checks the permissions it
+really needs (accessibility, usage access, notification access for Now
+Playing, and "draw over other apps" when the strip uses that drawing method)
+each time it starts and each time you open the manager. A missing one is turned
+back on quietly, without any prompt, when the car already trusts the app. If
+something still needs you, a banner on the manager says what is off and what
+stops working, with **Fix** and **Later**, and a quiet notification says the
+same. **Later** puts it off for six hours, or until the car is next started.
+
+**The manager.** Open it from the app grid, or tap the strip's edit tile. Its
+side menu scrolls when the text is large, and the highlight stays on the page
+you are on.
 
 - **Overview:** whether the strip is showing right now and why, plus the one-tap setup, its permission checklist and **Keep accessibility on**.
-- **Widgets:** add, remove, reorder, resize and configure cards.
+- **Widgets:** add, remove, reorder, resize and configure cards. The chosen card's settings are on the left, nearest the driver, and the list of cards is on the right.
 - **Launcher:** the favourites launcher's apps, grid size (4–10 columns, 2–6 rows), icon size, labels and background, with a live preview. The launcher floats over the current app with a blur, and its dimming keeps names readable over a light or dark screen. **Folders** creates, renames, reorders and deletes folders and picks their apps. It has no title and no "Add apps" tile: tap the pen to edit, then **Add apps**.
 - **Recent apps:** usage access (with **Set up**), the ways to open recent apps, and **Show closed apps again**.
 - **Back:** off, edge swipe or floating button; which edges and where on them; lock or reset the button.
@@ -186,14 +208,20 @@ itself at boot. If another app later switches it off, **Keep accessibility on**
 (on Overview, on by default) puts it straight back, and leaves that app's own
 services on.
 
-If **Usage access** is ever lost, the app quietly allows it again, so **Recent
-apps** keeps working. Its page also offers **Set up**. **Back** is off until you
-choose a style on the **Back** page.
+Since 0.7.0 the one-tap setup runs by itself the first time you open the
+manager, after the welcome and the quick tour (also once after updating), so on
+most cars there is nothing to press.
+
+If a permission the app needs is ever lost, it quietly turns it back on, so
+**Recent apps**, **Back** and **Now Playing** keep working. If it can't, the
+manager shows a banner with **Fix**. The **Recent apps** page also offers **Set
+up**. **Back** is off until you choose a style on the **Back** page.
 
 **Updating from 0.2.x?** Run the one-tap setup once more. Overview shows the
 setup as not finished until you do, because Quick contacts needs phone access.
 
-Every grant is optional. [docs/SETUP.md](docs/SETUP.md) covers manual setup,
+Only the grants the banner asks for are needed for what you use; the rest are
+optional. [docs/SETUP.md](docs/SETUP.md) covers manual setup,
 what each grant does, and troubleshooting.
 
 ## Privacy
@@ -207,7 +235,7 @@ what each grant does, and troubleshooting.
 - **Location** is used for the weather, prayer times and saving a Navigate place. The car's last position is kept on the head unit, so the weather can open on it before GPS answers. It leaves the head unit only as the coordinates of the weather and place-name requests above, and it is logged no finer than about 1 km.
 - **Car data is read-only** and never leaves the head unit. The app never writes a vehicle setting. For the same reason there is no climate (A/C) control.
 - **Notification access** exists only because Android requires it to list media sessions. The app never reads a notification.
-- **The accessibility service** reads only each window's type, bounds and owning package. It never reads screen text. The only actions it performs are going back, when you turn **Back** on, and opening the system's recent apps, if you turn that option on.
+- **The accessibility service** reads only each window's type, bounds and owning package. It never reads screen text. The only action it performs is going back, when you turn **Back** on.
 - **Usage access** is read only for when each app was last open, to list recent apps. It stays on the head unit.
 - **App permissions** changes another app's permissions through the head unit's own local debugging service. Nothing leaves the car, G700 Home never uninstalls an app through adb, and it never changes a car setting.
 
